@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Reveal from '../components/Reveal'
 import Scene3D from '../components/Scene3D'
+import TiltCard from '../components/TiltCard'
 
 export default function Home() {
   return (
@@ -95,13 +96,17 @@ export default function Home() {
             <Reveal as="p" className="section-sub" delay={0.2}>We don't just build software — we architect digital ecosystems built specifically for business owners, with AI-native architecture and ops-driven delivery baked in from day one.</Reveal>
 
             <ul className="features-list">
-              <Reveal as="li" className="feature-item" delay={0.3}>
-                <div className="feature-check">✓</div>
-                <div className="feature-text"><strong>Built for Business Owners</strong><p>We translate your goals into technology that drives real results, without the technical headaches.</p></div>
+              <Reveal as="li" delay={0.3}>
+                <TiltCard as="div" className="feature-item">
+                  <div className="feature-check">✓</div>
+                  <div className="feature-text"><strong>Built for Business Owners</strong><p>We translate your goals into technology that drives real results, without the technical headaches.</p></div>
+                </TiltCard>
               </Reveal>
-              <Reveal as="li" className="feature-item" delay={0.4}>
-                <div className="feature-check">✓</div>
-                <div className="feature-text"><strong>End-to-End Ownership</strong><p>From ideation to production to monitoring — we own the entire lifecycle so you don't have to.</p></div>
+              <Reveal as="li" delay={0.4}>
+                <TiltCard as="div" className="feature-item">
+                  <div className="feature-check">✓</div>
+                  <div className="feature-text"><strong>End-to-End Ownership</strong><p>From ideation to production to monitoring — we own the entire lifecycle so you don't have to.</p></div>
+                </TiltCard>
               </Reveal>
             </ul>
 
@@ -151,10 +156,12 @@ export default function Home() {
             ['03', 'Build & Test', 'Agile sprints with continuous integration, automated testing, and transparent progress reporting.'],
             ['04', 'Deploy & Operate', 'Zero-downtime deployments, monitoring, alerting, and ongoing optimization post-launch.'],
           ].map(([num, title, desc], i) => (
-            <Reveal className="process-step" key={num} delay={i * 0.1}>
-              <div className="step-num">{num}</div>
-              <div className="step-title">{title}</div>
-              <div className="step-desc">{desc}</div>
+            <Reveal key={num} delay={i * 0.1}>
+              <TiltCard className="process-step">
+                <div className="step-num">{num}</div>
+                <div className="step-title">{title}</div>
+                <div className="step-desc">{desc}</div>
+              </TiltCard>
             </Reveal>
           ))}
         </div>
@@ -173,17 +180,19 @@ export default function Home() {
             { text: 'The AI object detection system Autryx built for us exceeded all expectations. Rare to find such technical skill and communication.', initials: 'SA', name: 'Sadia Faisal', meta: 'AI Object Detection · Italy', badge: '🤖 AI / ML' },
             { text: 'We moved our entire infrastructure to the cloud with Autryx and the transition was seamless. Zero downtime.', initials: 'OM', name: 'Omar Mirza', meta: 'Cloud Migration · Dubai', badge: '☁️ Cloud Services' },
           ].map((r, i) => (
-            <Reveal className="review-card" key={r.name} delay={i * 0.1}>
-              <div className="review-stars">★★★★★</div>
-              <p className="review-text">"{r.text}"</p>
-              <div className="review-author">
-                <div className="review-avatar">{r.initials}</div>
-                <div className="review-info">
-                  <strong>{r.name}</strong>
-                  <span>{r.meta}</span>
+            <Reveal key={r.name} delay={i * 0.1}>
+              <TiltCard className="review-card">
+                <div className="review-stars">★★★★★</div>
+                <p className="review-text">"{r.text}"</p>
+                <div className="review-author">
+                  <div className="review-avatar">{r.initials}</div>
+                  <div className="review-info">
+                    <strong>{r.name}</strong>
+                    <span>{r.meta}</span>
+                  </div>
+                  <div className="review-badge">{r.badge}</div>
                 </div>
-                <div className="review-badge">{r.badge}</div>
-              </div>
+              </TiltCard>
             </Reveal>
           ))}
         </div>
@@ -194,12 +203,12 @@ export default function Home() {
       </section>
 
       <section id="cta">
-        <div className="cta-box">
+        <TiltCard as="div" className="cta-box">
           <span className="section-tag">◆ Let's Build Together</span>
           <Reveal as="h2" className="cta-title">Ready to Transform<br />Your Business?</Reveal>
           <Reveal as="p" className="cta-sub" delay={0.1}>Reach out directly — we respond fast. Whether you need a website, a Shopify store, or a full AI system, we're here to help business owners like you.</Reveal>
           <Reveal as={Link} to="/contact" className="btn-primary" delay={0.2}>Get In Touch</Reveal>
-        </div>
+        </TiltCard>
       </section>
     </>
   )
