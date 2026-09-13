@@ -946,3 +946,19 @@ footer {
   background: linear-gradient(135deg, var(--blue1), var(--blue2)); color:var(--cyan);
 }
 .process-flow-arrow { color:var(--accent); font-size:1.1rem; }
+
+/* ─── 3D POLISH: GLASS PANELS + TILT CARDS ─── */
+.glass-panel {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+}
+.tilt-card {
+  transition: transform .15s ease-out, box-shadow .25s ease-out;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.tilt-card:hover {
+  box-shadow: var(--shadow-dark-hover);
+}
