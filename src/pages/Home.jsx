@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Reveal from '../components/Reveal'
+import Scene3D from '../components/Scene3D'
 
 export default function Home() {
   return (
     <>
       <section id="hero">
+        <Scene3D />
         <div className="hero-orb hero-orb-1"></div>
         <div className="hero-orb hero-orb-2"></div>
 
