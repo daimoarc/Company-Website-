@@ -1,16 +1,15 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Reveal from '../components/Reveal'
-import Scene3D from '../components/Scene3D'
 import TiltCard from '../components/TiltCard'
+import WireframeScene from '../components/WireframeScene'
+import Icon from '../components/Icon'
 
 export default function Home() {
   return (
     <>
       <section id="hero">
-        <Scene3D />
-        <div className="hero-orb hero-orb-1"></div>
-        <div className="hero-orb hero-orb-2"></div>
+        <WireframeScene />
 
         <motion.div
           className="hero-badge"
@@ -36,7 +35,7 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          Autryx Solutions delivers end-to-end AI systems, web and mobile development, cloud infrastructure, and enterprise-grade DevOps — engineered for businesses that demand excellence.
+          DaimoArc delivers end-to-end AI systems, web and mobile development, cloud infrastructure, and enterprise-grade DevOps — engineered for businesses that demand excellence.
         </motion.p>
 
         <motion.div
@@ -79,6 +78,8 @@ export default function Home() {
             <Reveal as={Link} key={svc.to} to={svc.to} className="svc-tile" delay={i * 0.08}
               style={{ backgroundImage: `url('/images/${svc.img}')` }} aria-label={svc.label}>
               <span className="svc-tile-cta">Learn More →</span>
+              <span className="svc-tile-scrim"></span>
+              <span className="svc-tile-title">{svc.label}</span>
             </Reveal>
           ))}
         </div>
@@ -91,7 +92,7 @@ export default function Home() {
       <section id="about">
         <div className="about-inner">
           <div>
-            <Reveal as="span" className="section-tag">◆ Why Autryx</Reveal>
+            <Reveal as="span" className="section-tag">◆ Why DaimoArc</Reveal>
             <Reveal as="h2" className="section-title" delay={0.1}>Where <span>Precision</span><br />Meets Performance</Reveal>
             <Reveal as="p" className="section-sub" delay={0.2}>We don't just build software — we architect digital ecosystems built specifically for business owners, with AI-native architecture and ops-driven delivery baked in from day one.</Reveal>
 
@@ -121,13 +122,13 @@ export default function Home() {
               <div className="orbit-ping orbit-ping--delay"></div>
 
               <div className="orbit-ring orbit-ring--outer">
-                <div className="orbit-node" style={{ '--angle': '20deg' }}><span className="orbit-node-icon">🤖</span></div>
-                <div className="orbit-node" style={{ '--angle': '160deg' }}><span className="orbit-node-icon">☁️</span></div>
-                <div className="orbit-node" style={{ '--angle': '280deg' }}><span className="orbit-node-icon">⚙️</span></div>
+                <div className="orbit-node" style={{ '--angle': '20deg' }}><span className="orbit-node-icon"><Icon name="robot" size={20} /></span></div>
+                <div className="orbit-node" style={{ '--angle': '160deg' }}><span className="orbit-node-icon"><Icon name="cloud" size={20} /></span></div>
+                <div className="orbit-node" style={{ '--angle': '280deg' }}><span className="orbit-node-icon"><Icon name="gear" size={20} /></span></div>
               </div>
               <div className="orbit-ring orbit-ring--inner">
-                <div className="orbit-node" style={{ '--angle': '80deg' }}><span className="orbit-node-icon">⚡</span></div>
-                <div className="orbit-node" style={{ '--angle': '250deg' }}><span className="orbit-node-icon">📣</span></div>
+                <div className="orbit-node" style={{ '--angle': '80deg' }}><span className="orbit-node-icon"><Icon name="bolt" size={16} /></span></div>
+                <div className="orbit-node" style={{ '--angle': '250deg' }}><span className="orbit-node-icon"><Icon name="megaphone" size={16} /></span></div>
               </div>
 
               <div className="orbit-core">
@@ -176,9 +177,9 @@ export default function Home() {
 
         <div className="reviews-grid teaser-grid-narrow">
           {[
-            { text: 'Autryx Solutions built my WordPress website from scratch and it looks incredibly professional. Highly recommended.', initials: 'HS', name: 'Hani Shakoor', meta: 'WordPress Website · Qatar', badge: '🎨 WordPress' },
-            { text: 'The AI object detection system Autryx built for us exceeded all expectations. Rare to find such technical skill and communication.', initials: 'SA', name: 'Sadia Faisal', meta: 'AI Object Detection · Italy', badge: '🤖 AI / ML' },
-            { text: 'We moved our entire infrastructure to the cloud with Autryx and the transition was seamless. Zero downtime.', initials: 'OM', name: 'Omar Mirza', meta: 'Cloud Migration · Dubai', badge: '☁️ Cloud Services' },
+            { text: 'DaimoArc built my WordPress website from scratch and it looks incredibly professional. Highly recommended.', initials: 'HS', name: 'Hani Shakoor', meta: 'WordPress Website · Qatar', badge: 'WordPress' },
+            { text: 'The AI object detection system DaimoArc built for us exceeded all expectations. Rare to find such technical skill and communication.', initials: 'SA', name: 'Sadia Faisal', meta: 'AI Object Detection · Italy', badge: 'AI / ML' },
+            { text: 'We moved our entire infrastructure to the cloud with DaimoArc and the transition was seamless. Zero downtime.', initials: 'OM', name: 'Omar Mirza', meta: 'Cloud Migration · Dubai', badge: 'Cloud Services' },
           ].map((r, i) => (
             <Reveal key={r.name} delay={i * 0.1}>
               <TiltCard className="review-card">

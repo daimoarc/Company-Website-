@@ -16,7 +16,7 @@
 - No changes to pages other than `src/pages/Home.jsx` (other routes stay as placeholders).
 - New dependencies limited to `three`, `@react-three/fiber`, `@react-three/drei` — no other libraries.
 - Respect `prefers-reduced-motion: reduce` in the 3D scene (static fallback, no animation).
-- Image generation budget: 9 images via `gpt_image_2_5` at `quality=medium`, `resolution=1k` (1 credit each = 9 credits total, workspace has 10). Do not use a higher quality/resolution tier without checking remaining credits first (`higgsfield account credits` or workspace list).
+- Image generation budget (corrected during implementation — see Task 6): `gpt_image_2_5` requires a paid plan and is not usable on this free-tier workspace regardless of credits. Use `z_image` (0.15 credits/image, free-tier compatible) for all 9 base images, plus `image_background_remover` (1 credit) for the logo's background removal only — total ≈2.35 credits of the ~10 available. Check `higgsfield workspace list` before starting.
 - `Company Website/app` is not yet a git repository — Task 1 initializes one so subsequent tasks can commit.
 
 ---
@@ -557,34 +557,48 @@ git commit -m "feat: apply TiltCard polish to about/process/reviews/CTA sections
 
 No code changes needed — Home.jsx already references these paths by filename, so replacing the files in place updates the site automatically.
 
+**Model note (corrected during implementation):** the originally planned
+`gpt_image_2_5` requires a paid Higgsfield plan and fails on the free
+tier with `job_minimum_basic_plan_required`, regardless of credit
+balance. Verified working alternative on the free plan: `z_image`
+(0.15 credits/image; only supports `--aspect-ratio` — no
+`--background`/`--quality`/`--resolution` flags) for all 9 base images,
+plus `image_background_remover` (1 credit) as a second pass on the logo
+only, since `z_image` cannot generate directly with a transparent
+background.
+
 - [ ] **Step 1: Check remaining credits before starting**
 
 ```bash
 higgsfield workspace list
 ```
 
-Confirm at least 9 credits are available (budget: 9 images × 1 credit at `quality=medium`, `resolution=1k`).
+Confirm at least 3 credits are available (budget: 8 tiles × 0.15 +
+1 logo × 0.15 + 1 background-removal × 1 ≈ 2.35 credits total).
 
 - [ ] **Step 2: Generate the 8 service tile images**
 
-Run each of these (aspect ratio 4:5 matches the existing tile images' ~0.93:1 portrait proportions; `--wait` blocks until the job finishes and prints the result URL):
+Run each of these (`z_image` only supports `1:1,4:3,3:4,16:9,9:16`
+aspect ratios; `1:1` is the closest match to the existing tile images'
+~0.93:1 portrait proportions; `--wait` blocks until the job finishes and
+prints the result URL):
 
 ```bash
-higgsfield generate create gpt_image_2_5 --prompt "A glossy 3D render of a glowing cyan neural network formed from interconnected translucent nodes and light trails, floating in a dark navy void, cinematic volumetric lighting, futuristic AI technology aesthetic, no text" --aspect-ratio 4:5 --background opaque --quality medium --resolution 1k --wait
+higgsfield generate create z_image --prompt "A glossy 3D render of a glowing cyan neural network formed from interconnected translucent nodes and light trails, floating in a dark navy void, cinematic volumetric lighting, futuristic AI technology aesthetic, no text" --aspect-ratio 1:1 --wait
 
-higgsfield generate create gpt_image_2_5 --prompt "A glossy 3D render of an abstract modular product architecture, interlocking glowing cyan geometric blocks assembling in mid-air, dark navy background, cinematic rim lighting, futuristic engineering aesthetic, no text" --aspect-ratio 4:5 --background opaque --quality medium --resolution 1k --wait
+higgsfield generate create z_image --prompt "A glossy 3D render of an abstract modular product architecture, interlocking glowing cyan geometric blocks assembling in mid-air, dark navy background, cinematic rim lighting, futuristic engineering aesthetic, no text" --aspect-ratio 1:1 --wait
 
-higgsfield generate create gpt_image_2_5 --prompt "A glossy 3D render of a glowing cyan cloud shape formed from soft geometric facets with streams of light data flowing into it, floating above a dark navy void, cinematic lighting, futuristic cloud technology aesthetic, no text" --aspect-ratio 4:5 --background opaque --quality medium --resolution 1k --wait
+higgsfield generate create z_image --prompt "A glossy 3D render of a glowing cyan cloud shape formed from soft geometric facets with streams of light data flowing into it, floating above a dark navy void, cinematic lighting, futuristic cloud technology aesthetic, no text" --aspect-ratio 1:1 --wait
 
-higgsfield generate create gpt_image_2_5 --prompt "A glossy 3D render of a glowing cyan megaphone with radiating signal waves and floating glassy heart and like icons, dark navy background, cinematic lighting, futuristic marketing technology aesthetic, no text" --aspect-ratio 4:5 --background opaque --quality medium --resolution 1k --wait
+higgsfield generate create z_image --prompt "A glossy 3D render of a glowing cyan megaphone with radiating signal waves and floating glassy heart and like icons, dark navy background, cinematic lighting, futuristic marketing technology aesthetic, no text" --aspect-ratio 1:1 --wait
 
-higgsfield generate create gpt_image_2_5 --prompt "A glossy 3D render of an infinite-loop DevOps symbol made of glowing cyan glass, with small floating glassy server and container shapes orbiting it, dark navy background, cinematic lighting, futuristic aesthetic, no text" --aspect-ratio 4:5 --background opaque --quality medium --resolution 1k --wait
+higgsfield generate create z_image --prompt "A glossy 3D render of an infinite-loop DevOps symbol made of glowing cyan glass, with small floating glassy server and container shapes orbiting it, dark navy background, cinematic lighting, futuristic aesthetic, no text" --aspect-ratio 1:1 --wait
 
-higgsfield generate create gpt_image_2_5 --prompt "A glossy 3D render of stacked glowing cyan layered translucent platforms connected by beams of light, representing frontend and backend layers, floating in a dark navy void, cinematic lighting, futuristic aesthetic, no text" --aspect-ratio 4:5 --background opaque --quality medium --resolution 1k --wait
+higgsfield generate create z_image --prompt "A glossy 3D render of stacked glowing cyan layered translucent platforms connected by beams of light, representing frontend and backend layers, floating in a dark navy void, cinematic lighting, futuristic aesthetic, no text" --aspect-ratio 1:1 --wait
 
-higgsfield generate create gpt_image_2_5 --prompt "A glossy 3D render of a floating translucent glass blueprint panel with glowing cyan checkmarks and connecting lines, dark navy background, cinematic lighting, futuristic requirements-engineering aesthetic, no text" --aspect-ratio 4:5 --background opaque --quality medium --resolution 1k --wait
+higgsfield generate create z_image --prompt "A glossy 3D render of a floating translucent glass blueprint panel with glowing cyan checkmarks and connecting lines, dark navy background, cinematic lighting, futuristic requirements-engineering aesthetic, no text" --aspect-ratio 1:1 --wait
 
-higgsfield generate create gpt_image_2_5 --prompt "A glossy 3D render of two interlocking glowing cyan glass emblem shapes, an abstract shopping bag and an abstract browser window, dark navy background, cinematic lighting, futuristic e-commerce aesthetic, no text" --aspect-ratio 4:5 --background opaque --quality medium --resolution 1k --wait
+higgsfield generate create z_image --prompt "A glossy 3D render of two interlocking glowing cyan glass emblem shapes, an abstract shopping bag and an abstract browser window, dark navy background, cinematic lighting, futuristic e-commerce aesthetic, no text" --aspect-ratio 1:1 --wait
 ```
 
 Each command prints a result image URL when it finishes. Download each to the matching filename:
@@ -600,14 +614,31 @@ curl -L -o "app/public/images/requirement-engineering.png" "<url from command 7>
 curl -L -o "app/public/images/wordpress-shopify.png" "<url from command 8>"
 ```
 
-- [ ] **Step 3: Generate the logo**
+- [ ] **Step 3: Generate the logo, then remove its background**
+
+First, generate the logo on a plain solid white background (so it can be cleanly cut out afterward):
 
 ```bash
-higgsfield generate create gpt_image_2_5 --prompt "A modern minimalist tech company logo for 'Autryx Solutions': a glowing cyan geometric emblem (an abstract interconnected node/circuit mark) to the left of the wordmark 'Autryx Solutions' set in a clean modern sans-serif font, transparent background, dark-theme friendly, high contrast cyan glow, no other text" --aspect-ratio 4:3 --background transparent --quality medium --resolution 1k --wait
+higgsfield generate create z_image --prompt "A modern minimalist tech company logo for 'Autryx Solutions': a glowing cyan geometric emblem (an abstract interconnected node/circuit mark) to the left of the wordmark 'Autryx Solutions' set in a clean modern sans-serif font, on a plain solid white studio background, high contrast cyan and dark-navy coloring, no other text" --aspect-ratio 4:3 --wait
 ```
 
+Download it to a temporary local file (required because `image_background_remover` takes a local file path or upload ID, not a raw URL):
+
 ```bash
-curl -L -o "app/public/Logo.png" "<url from command>"
+curl -L -o "app/public/Logo-raw.png" "<url from logo command>"
+```
+
+Then remove its background to produce a true alpha-channel PNG:
+
+```bash
+higgsfield generate create image_background_remover --image "app/public/Logo-raw.png" --wait
+```
+
+Download the result over the final logo filename, then delete the temporary raw file:
+
+```bash
+curl -L -o "app/public/Logo.png" "<url from background-remover command>"
+rm "app/public/Logo-raw.png"
 ```
 
 - [ ] **Step 4: Review the results in the browser**

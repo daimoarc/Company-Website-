@@ -58,15 +58,24 @@ Generate via the Higgsfield CLI (`higgsfield generate create ...`, now
 authenticated), in a consistent style: **dark background-friendly,
 glossy 3D render, cyan neon accent lighting**, matching the new hero.
 
-**Budget constraint:** the connected Higgsfield workspace is on the free
-plan with 10 total credits. `gpt_image_2_5` costs 1 credit/image; 9
-generations (8 tiles + 1 logo) = 9 credits, leaving 1 in reserve. The
-8 `*-hero.png` variants (used only on the not-yet-ported individual
-service pages) are deferred to when those pages are ported — generating
-them now would exceed the credit budget at this quality tier.
+**Budget/plan constraint (revised during implementation):** the connected
+Higgsfield workspace is on the free plan with ~10 total credits.
+`gpt_image_2_5` (originally planned) was found at implementation time to
+require a paid plan tier (`job_minimum_basic_plan_required`) — this is a
+plan-tier gate, not a credit-balance issue, and free-tier accounts cannot
+use it regardless of credits available. Verified alternative: `z_image`
+(0.15 credits/image, confirmed working on the free plan) for all 8 tile
+images, plus `z_image` + a follow-up `image_background_remover` pass
+(1 credit) for the logo, since `z_image` has no transparent-background
+option — generate the logo on a plain solid background, then strip it to
+a true alpha-channel PNG. Total: 8×0.15 + 1×0.15 + 1×1 ≈ 2.35 credits,
+comfortably within budget. The 8 `*-hero.png` variants (used only on the
+not-yet-ported individual service pages) are still deferred to when those
+pages are ported.
 
 Asset list (9 files, replacing existing files 1:1 by name so no other
-code needs to change), model: `gpt_image_2_5`:
+code needs to change), model: `z_image` (tiles + logo base), plus
+`image_background_remover` (logo only):
 
 Tile images (`images/*.png`):
 `ai-ml.png`, `product-engineering.png`, `cloud-services.png`,
