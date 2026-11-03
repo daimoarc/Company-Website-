@@ -16,6 +16,7 @@ import WordpressShopify from './pages/WordpressShopify'
 import Privacy from './pages/Privacy'
 import Cookies from './pages/Cookies'
 import Terms from './pages/Terms'
+import ProjectChecklist from './pages/ProjectChecklist'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="privacy" element={<Privacy />} />
         <Route path="cookies" element={<Cookies />} />
         <Route path="terms" element={<Terms />} />
+        <Route path="project-checklist" element={<ProjectChecklist />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

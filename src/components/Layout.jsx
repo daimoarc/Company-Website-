@@ -159,6 +159,7 @@ export default function Layout() {
               <li><Link to="/about">About</Link></li>
               <li><Link to="/#process">Process</Link></li>
               <li><Link to="/reviews">Reviews</Link></li>
+              <li><Link to="/project-checklist">Project checklist</Link></li>
               <li><Link to="/contact">Contact</Link></li>
             </ul>
           </div>

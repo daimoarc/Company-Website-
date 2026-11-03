@@ -334,54 +334,173 @@ img { max-width: 100%; display: block; }
   background: radial-gradient(circle, var(--accent) 0 2px, transparent 2.5px);
 }
 
-/* ─── PROJECT INQUIRY FORM ─── */
-.intake-form { text-align: left; }
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 20px; margin-bottom: 24px; }
-.form-field { display: flex; flex-direction: column; gap: 8px; }
-.form-field--full { margin-bottom: 24px; }
-.form-field > span { font-size: 14px; line-height: 20px; font-weight: 500; color: var(--text-2); }
-.form-field input, .form-field select, .form-field textarea {
-  width: 100%; min-height: 44px; padding: 12px 16px; border-radius: 10px;
-  background: var(--card); border: 1px solid var(--line);
+/* ─── PROJECT INQUIRY FORM ───
+   One panel on the card surface. Fields sit a step darker, so they read as recessed, and every choice
+   uses the same chip. A picked chip is a small surface step with a hairline highlight; the accent only
+   marks the pick itself: a lit circuit pad for single choices, a check for multiple */
+.intake-form { padding: 32px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); text-align: left; }
+/* progress: three circuit pads on one trace, lit as each step is reached */
+.form-steps { display: flex; align-items: center; gap: 8px; margin-bottom: 28px; list-style: none; }
+.form-steps li { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; font-family: var(--mono); font-size: 12px; line-height: 16px; color: var(--muted); white-space: nowrap; transition: color 240ms var(--ease); }
+.form-steps li:last-child { flex: none; }
+.form-steps li::before { content: ''; flex-shrink: 0; width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--line-strong); transition: border-color 240ms var(--ease); }
+.form-steps li:not(:last-child)::after { content: ''; flex: 1; height: 1px; margin-left: 4px; background: var(--line); transition: background-color 240ms var(--ease); }
+.form-steps li.is-done::before, .form-steps li[aria-current="step"]::before { border-color: var(--accent); background: radial-gradient(circle, var(--accent) 0 2px, transparent 2.5px); }
+.form-steps li[aria-current="step"] { color: var(--text-2); }
+.form-steps li.is-done::after { background: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+
+.form-step { display: grid; gap: 24px; animation: formStepIn 240ms var(--ease) both; }
+@keyframes formStepIn { from { opacity: 0; transform: translateY(8px); } }
+.form-step-head { display: grid; gap: 4px; }
+.form-step-title { font-size: 20px; line-height: 28px; font-weight: 500; color: var(--text); scroll-margin-top: calc(var(--nav-h) + 24px); }
+.form-step-title:focus { outline: none; }
+.form-step-meta { font-family: var(--mono); font-size: 12px; line-height: 16px; color: var(--muted); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 20px; }
+.form-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.form-suggest { align-self: flex-start; padding: 0; background: none; border: 0; font: inherit; font-size: 12px; line-height: 16px; color: var(--text-2); cursor: pointer; text-align: left; }
+.form-suggest span { color: var(--text); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+.form-suggest:hover span { text-decoration-color: var(--text); }
+.form-label { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 14px; line-height: 20px; font-weight: 500; color: var(--text-2); }
+.form-label-meta { font-family: var(--mono); font-size: 12px; line-height: 16px; font-weight: 400; color: var(--muted); }
+
+.form-input {
+  width: 100%; height: 48px; padding: 0 16px; border-radius: 10px;
+  background: var(--bg); border: 1px solid var(--line);
   color: var(--text); font-family: var(--font); font-size: 15px; line-height: 20px;
-  outline: none; transition: border-color 160ms var(--ease), background-color 160ms var(--ease);
+  outline: none; transition: border-color 160ms var(--ease);
 }
-.form-field input::placeholder, .form-field textarea::placeholder { color: var(--muted); }
-.form-field input:hover, .form-field select:hover, .form-field textarea:hover { border-color: var(--line-strong); }
-.form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--accent); background: var(--raised); }
-.form-field select {
-  appearance: none; cursor: pointer; padding-right: 44px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%237a8296' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 16px center;
+textarea.form-input { height: auto; min-height: 128px; padding: 12px 16px; resize: vertical; }
+.form-input::placeholder { color: var(--muted); }
+.form-input:hover { border-color: var(--line-strong); }
+.form-input[aria-invalid="true"] { border-color: #e5484d; }
+.form-input:focus { border-color: var(--accent); }
+
+.choice-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice {
+  position: relative; display: inline-flex; align-items: center; gap: 8px;
+  min-height: 36px; padding: 0 12px; border-radius: 8px;
+  background: var(--bg); border: 1px solid var(--line);
+  color: var(--text-2); font-size: 14px; line-height: 20px; font-variant-numeric: tabular-nums;
+  cursor: pointer; user-select: none;
+  transition: background-color 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease);
 }
-.form-field select:invalid { color: var(--muted); }
-.form-field select option { background: var(--card); color: var(--text); }
-.form-field textarea { resize: vertical; min-height: 128px; }
-.form-field-hint { font-style: normal; font-weight: 400; color: var(--muted); }
-.service-checkbox-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
-.service-checkbox {
-  display: flex; align-items: center; gap: 12px; cursor: pointer;
-  min-height: 44px; padding: 12px 16px; border-radius: 10px; font-size: 14px; line-height: 20px; color: var(--text);
-  background: var(--card); border: 1px solid var(--line);
-  transition: border-color 160ms var(--ease), background-color 160ms var(--ease);
+/* the real input covers the chip, invisible, so clicks, keyboard and screen readers all work natively */
+.choice input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.choice::before {
+  content: ''; flex-shrink: 0; width: 14px; height: 14px; border-radius: 4px; border: 1px solid var(--line-strong);
+  background: transparent center / 10px no-repeat;
+  transition: background-color 160ms var(--ease), border-color 160ms var(--ease);
 }
-.service-checkbox:hover { border-color: var(--line-strong); }
-.service-checkbox:has(input:checked) { border-color: var(--accent); background: var(--raised); }
-.service-checkbox input { accent-color: var(--accent); cursor: pointer; width: 16px; height: 16px; flex-shrink: 0; }
-.form-consent { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 24px; font-size: 14px; line-height: 20px; color: var(--text-2); cursor: pointer; }
-.form-consent input { margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+.choice--radio::before { border-radius: 50%; }
+.choice:hover { border-color: var(--line-strong); color: var(--text); }
+.choice:has(input:checked) { background: var(--raised); border-color: var(--line-strong); color: var(--text); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06); }
+.choice:has(input:checked)::before {
+  border-color: var(--accent); background-color: var(--accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%230b0d14' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-7'/%3E%3C/svg%3E");
+}
+.choice--radio:has(input:checked)::before { background: radial-gradient(circle, var(--accent) 0 3px, transparent 3.5px); }
+.choice:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.choice-group[aria-invalid="true"] .choice { border-color: color-mix(in srgb, #e5484d 30%, var(--line)); }
+
+/* two options sit in one recessed track, the same height as the text fields beside it */
+.segmented { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; height: 48px; padding: 4px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line); }
+.segmented .choice { justify-content: center; min-height: 0; border-radius: 6px; border-color: transparent; background: transparent; }
+.segmented .choice::before { display: none; }
+.segmented .choice:has(input:checked) { background: var(--raised); border-color: var(--line); }
+
+.form-footer { display: grid; justify-items: start; gap: 16px; margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--line); }
+.form-nav { display: flex; align-items: center; gap: 16px; }
+.form-back { padding: 12px 4px; background: none; border: 0; font: inherit; font-size: 15px; line-height: 20px; color: var(--text-2); cursor: pointer; transition: color 160ms var(--ease); }
+.form-back:hover { color: var(--text); }
+.form-trust { display: flex; flex-wrap: wrap; column-gap: 8px; row-gap: 4px; font-size: 12px; line-height: 16px; color: var(--muted); }
+.form-trust span + span::before { content: '·'; margin-right: 8px; }
+.form-consent { position: relative; display: flex; align-items: flex-start; gap: 12px; font-size: 14px; line-height: 20px; color: var(--text-2); cursor: pointer; }
+.form-consent input {
+  appearance: none; flex-shrink: 0; width: 16px; height: 16px; margin: 2px 0 0; border-radius: 4px;
+  border: 1px solid var(--line-strong); background: var(--bg) center / 10px no-repeat; cursor: pointer;
+  transition: background-color 160ms var(--ease), border-color 160ms var(--ease);
+}
+.form-consent input:checked {
+  border-color: var(--accent); background-color: var(--accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%230b0d14' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-7'/%3E%3C/svg%3E");
+}
+.form-consent input[aria-invalid="true"] { border-color: #e5484d; }
 .form-trap { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
-.form-status { font-size: 14px; line-height: 20px; margin-bottom: 16px; }
+.form-status { font-size: 14px; line-height: 20px; }
 .form-status--error { color: #e5484d; }
-.form-status-link { color: var(--text); text-decoration: underline; }
-.intake-form-done { padding: 48px 24px; text-align: center; border-radius: 16px; background: var(--card); border: 1px solid var(--line); }
+.form-status-link { color: var(--text); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+/* field messages: the same muted red, under the field they belong to */
+.form-error { font-size: 12px; line-height: 16px; font-weight: 400; color: #e5484d; }
+.form-error--block { display: block; margin-top: 4px; }
+
+.intake-form-done { padding: 40px 32px; text-align: left; border-radius: 20px; background: var(--card); border: 1px solid var(--line); }
 .intake-form-done-icon {
-  width: 40px; height: 40px; margin: 0 auto 16px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #4cc38a; border: 1px solid rgba(76, 195, 138, 0.4);
+  width: 40px; height: 40px; margin-bottom: 20px; border-radius: 50%;
+  display: grid; place-items: center; color: #4cc38a; background: var(--raised); border: 1px solid var(--line-strong);
 }
-.intake-form-done h3 { font-size: 20px; line-height: 28px; font-weight: 500; margin-bottom: 8px; }
-.intake-form-done p { color: var(--text-2); }
+.intake-form-done h2 { font-size: 20px; line-height: 28px; font-weight: 500; color: var(--text); }
+.intake-form-done-ref { display: block; margin-top: 4px; font-family: var(--mono); font-size: 12px; line-height: 16px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.intake-next-title { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 12px; line-height: 16px; color: var(--muted); }
+.intake-next { list-style: none; display: grid; gap: 12px; margin-top: 16px; font-size: 14px; line-height: 20px; color: var(--text-2); }
+.intake-next li { display: flex; align-items: flex-start; gap: 12px; }
+.intake-next li::before { content: ''; flex-shrink: 0; width: 10px; height: 10px; margin-top: 5px; border-radius: 50%; border: 1px solid var(--line-strong); }
+/* the first pad is lit: that's the step already under way */
+.intake-next li:first-child::before { border-color: var(--accent); background: radial-gradient(circle, var(--accent) 0 2px, transparent 2.5px); }
+.intake-form-done-link { display: inline-flex; gap: 8px; margin-top: 28px; font-size: 14px; line-height: 20px; color: var(--text); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 4px; transition: text-decoration-color 160ms var(--ease); }
+.intake-form-done-link:hover { text-decoration-color: var(--text); }
+@media (prefers-reduced-motion: reduce) {
+  .form-step { animation: none; }
+}
+/* an unfinished brief brought back after a refresh, with a quiet way to clear it */
+.form-restored { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; padding: 8px 12px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); font-size: 12px; line-height: 16px; color: var(--text-2); }
+.form-restored-reset { padding: 4px 0; background: none; border: 0; font: inherit; color: var(--text); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; cursor: pointer; }
+.form-aside { font-size: 12px; line-height: 16px; color: var(--muted); }
+.form-aside a { color: var(--text-2); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; transition: color 160ms var(--ease); }
+.form-aside a:hover { color: var(--text); }
+
+/* ─── PROJECT CHECKLIST ─── */
+.checklist { max-width: 760px; }
+.checklist-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-top: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.checklist-meta { display: flex; flex-wrap: wrap; column-gap: 8px; row-gap: 4px; font-family: var(--mono); font-size: 12px; line-height: 16px; color: var(--muted); }
+.checklist-meta span + span::before { content: '·'; margin-right: 8px; }
+.checklist-progress { margin-top: 16px; font-family: var(--mono); font-size: 12px; line-height: 16px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.checklist-section { margin-top: 40px; }
+.checklist-title { display: flex; align-items: center; gap: 8px; font-size: 18px; line-height: 24px; font-weight: 500; color: var(--text); }
+.checklist-title::before {
+  content: ''; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  border: 1px solid var(--accent); background: radial-gradient(circle, var(--accent) 0 2px, transparent 2.5px);
+}
+.checklist-items { list-style: none; margin-top: 12px; border-top: 1px solid var(--line); }
+.checklist-items li { border-bottom: 1px solid var(--line); }
+.checklist-item { display: flex; align-items: flex-start; gap: 16px; padding: 16px 0; cursor: pointer; }
+.checklist-item input {
+  appearance: none; flex-shrink: 0; width: 18px; height: 18px; margin: 3px 0 0; border-radius: 4px;
+  border: 1px solid var(--line-strong); background: var(--bg) center / 12px no-repeat; cursor: pointer;
+  transition: background-color 160ms var(--ease), border-color 160ms var(--ease);
+}
+.checklist-item input:checked {
+  border-color: var(--accent); background-color: var(--accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%230b0d14' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-7'/%3E%3C/svg%3E");
+}
+.checklist-q { display: block; font-size: 16px; line-height: 24px; color: var(--text); transition: color 160ms var(--ease); }
+.checklist-why { display: block; margin-top: 4px; font-size: 14px; line-height: 20px; color: var(--text-2); }
+.checklist-item:has(input:checked) .checklist-q { color: var(--text-2); }
+.checklist-next { margin-top: 48px; padding: 32px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); }
+.checklist-next h2 { font-size: 20px; line-height: 28px; font-weight: 500; color: var(--text); }
+.checklist-next p { max-width: 560px; margin-top: 8px; font-size: 15px; line-height: 24px; color: var(--text-2); }
+.checklist-next .btn-primary { margin-top: 24px; }
+
+/* Printing the checklist: black on white, without the site's menus, buttons or circuit */
+@media print {
+  :root { --bg: #fff; --card: #fff; --raised: #fff; --text: #000; --text-2: #333; --muted: #555; --line: #ccc; --line-strong: #888; --accent: #000; }
+  body { background: #fff; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  .nav, .footer, .mobile-menu, .checklist-print, .checklist-next .btn-primary, .checklist-progress { display: none !important; }
+  .page-top { padding-top: 0; }
+  .page-section { padding-bottom: 0; }
+  .checklist-section { break-inside: avoid; }
+  .checklist-next { border: 1px solid #ccc; }
+}
 
 /* ─── SERVICE DETAIL PAGES ─── */
 .svc-hero { position: relative; min-height: 80vh; display: flex; align-items: center; overflow: hidden; padding: calc(var(--nav-h) + 64px) 0 80px; }
@@ -666,6 +785,16 @@ img { max-width: 100%; display: block; }
   .reviews-grid { columns: 1; }
   .diagram-steps { grid-template-columns: 1fr 1fr; }
   .form-grid { grid-template-columns: 1fr; gap: 20px; }
+  .intake-form { padding: 20px; border-radius: 16px; }
+  .choice-group--list { display: grid; } /* long service names read as a tidy list instead of ragged chips */
+  .form-footer { margin-top: 24px; padding-top: 24px; justify-items: stretch; }
+  .form-nav { flex-direction: column; align-items: stretch; gap: 4px; }
+  .form-trust { flex-direction: column; align-items: center; }
+  .form-trust span + span::before { content: none; }
+  .form-steps { margin-bottom: 24px; }
+  .checklist-next { padding: 24px 20px; border-radius: 16px; }
+  .checklist-print, .checklist-next .btn-primary { width: 100%; }
+  .intake-form-done { padding: 32px 20px; border-radius: 16px; }
   .hero-actions, .cta-actions { flex-direction: column; align-items: stretch; width: 100%; }
   .footer-grid { grid-template-columns: 1fr; gap: 32px; }
   .footer-bottom { flex-direction: column; text-align: center; }
@@ -674,7 +803,8 @@ img { max-width: 100%; display: block; }
 /* Touch screens: iPhones zoom the page when a field's text is under 16px,
    and every tap target gets at least 40px of height for a finger */
 @media (pointer: coarse) {
-  .form-field input, .form-field select, .form-field textarea { font-size: 16px; }
+  .form-input { font-size: 16px; }
+  .choice { min-height: 40px; }
   .nav-logo { min-height: 44px; align-items: center; }
   .footer-col ul { gap: 0; }
   .footer-col a, .footer-email { display: inline-block; padding: 10px 0; }

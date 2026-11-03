@@ -33,7 +33,11 @@ export default function Privacy() {
         <strong>When you browse the site</strong>, our website host’s servers automatically record standard technical information about
         each request, such as your IP address, browser type and the page requested. This is needed to deliver the website and keep it secure.
       </p>
-      <p>We do not use analytics, advertising trackers or tracking cookies. See our <Link to="/cookies">cookie policy</Link>.</p>
+      <p>
+        <strong>When you use the project form</strong>, we count how many people start it, finish each step and send it. These are
+        anonymous daily totals that contain no personal information.
+      </p>
+      <p>We do not use advertising trackers or tracking cookies. See our <Link to="/cookies">cookie policy</Link>.</p>
       <p>Please do not send us sensitive information, such as health details, through the form.</p>
 
       <h2>3. How we use it and our legal basis</h2>
@@ -48,7 +52,8 @@ export default function Privacy() {
         </li>
         <li>
           <strong>Our legitimate interests</strong>: keeping a record of enquiries and our correspondence, following up on an enquiry you
-          started, and protecting the website and form from spam and misuse (Article 6(1)(f))
+          started, understanding how many people complete the project form, and protecting the website and form from spam and misuse
+          (Article 6(1)(f))
         </li>
         <li>
           <strong>Legal obligations</strong>: keeping the records the law requires if you become a client, such as accounting records
@@ -60,8 +65,9 @@ export default function Privacy() {
       <h2>4. Who we share it with</h2>
       <ul>
         <li>
-          <strong>Google</strong>: project form submissions are saved to a Google Sheet through Google Apps Script, and we use Google for
-          email. Google handles this information on our behalf under its data processing terms
+          <strong>Google</strong>: project form submissions, and the anonymous counts of how many people complete the form, are saved to
+          Google Sheets through Google Apps Script, and we use Google for email. Google handles this information on our behalf under its
+          data processing terms
         </li>
         <li><strong>Our website hosting provider</strong>, which stores the website and its server logs</li>
         <li>
@@ -93,6 +99,10 @@ export default function Privacy() {
         We use reputable providers, limit access to the people working on your enquiry or project, and take reasonable technical and
         organisational measures to protect your information. No way of sending or storing data online is completely secure, but we work to
         keep the risk low and will act quickly if anything goes wrong.
+      </p>
+      <p>
+        To stop spam, the project form checks each submission for signs of automation and limits how often the same email address can send
+        a brief. For this, a scrambled version of your email address is kept for up to an hour and then deleted automatically.
       </p>
 
       <h2>8. Your rights</h2>
