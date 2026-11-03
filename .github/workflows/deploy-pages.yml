@@ -1,0 +1,60 @@
+# Builds the site and publishes it to GitHub Pages on every push to main.
+# Live at https://daimoarc.github.io/Company-Website-/
+# One-time setup: repository Settings → Pages → Source: GitHub Actions.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build for the /Company-Website-/ subfolder
+        run: npm run build
+        env:
+          BASE_PATH: /Company-Website-/
+
+      # GitHub Pages has no SPA routing. Every page in the sitemap gets its own copy of the app
+      # (services.html serves /services with a normal 200 status, so link previews work),
+      # and 404.html catches every other path.
+      - name: Add an entry file for every page
+        run: |
+          cp dist/index.html dist/404.html
+          for p in $(grep -o '<loc>[^<]*' public/sitemap.xml | sed 's#<loc>https://daimoarc.com##'); do
+            [ "$p" = "/" ] && continue
+            mkdir -p "$(dirname "dist$p")"
+            cp dist/index.html "dist$p.html"
+          done
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

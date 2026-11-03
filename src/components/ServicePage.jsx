@@ -14,7 +14,7 @@ export default function ServicePage({ heroImage, title, subtitle, lead, whyItMat
   return (
     <>
       <section className="svc-hero">
-        <div className="svc-hero-bg" style={{ backgroundImage: `url('/images/${heroImage.replace(/\.png$/, '.webp')}')` }}></div>
+        <div className="svc-hero-bg" style={{ backgroundImage: `url('${import.meta.env.BASE_URL}images/${heroImage.replace(/\.png$/, '.webp')}')` }}></div>
         <div className="svc-hero-overlay"></div>
         <div className="svc-hero-inner">
           <motion.div
