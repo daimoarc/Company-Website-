@@ -29,7 +29,7 @@ const PATHS = {
   support: <><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4" /><line x1="4.2" y1="4.2" x2="9.5" y2="9.5" /><line x1="14.5" y1="14.5" x2="19.8" y2="19.8" /><line x1="19.8" y1="4.2" x2="14.5" y2="9.5" /><line x1="9.5" y1="14.5" x2="4.2" y2="19.8" /></>,
 }
 
-export default function Icon({ name, size = 22, ...props }) {
+export default function Icon({ name, size = 18, ...props }) {
   const path = PATHS[name]
   if (!path) return null
   return (
@@ -39,7 +39,7 @@ export default function Icon({ name, size = 22, ...props }) {
       height={size}
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
+      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
       {...props}

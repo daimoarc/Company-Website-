@@ -13,6 +13,10 @@ import MetaAds from './pages/MetaAds'
 import ProductEngineering from './pages/ProductEngineering'
 import RequirementEngineering from './pages/RequirementEngineering'
 import WordpressShopify from './pages/WordpressShopify'
+import Privacy from './pages/Privacy'
+import Cookies from './pages/Cookies'
+import Terms from './pages/Terms'
+import NotFound from './pages/NotFound'
 
 export default function App() {
   return (
@@ -31,6 +35,10 @@ export default function App() {
         <Route path="product-engineering" element={<ProductEngineering />} />
         <Route path="requirement-engineering" element={<RequirementEngineering />} />
         <Route path="wordpress-shopify" element={<WordpressShopify />} />
+        <Route path="privacy" element={<Privacy />} />
+        <Route path="cookies" element={<Cookies />} />
+        <Route path="terms" element={<Terms />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   )

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { GOOGLE_SHEETS_ENDPOINT, CONTACT_EMAIL } from '../config'
 
 const SERVICES = [
@@ -41,6 +42,17 @@ const EMPTY_FORM = {
 
 const DUPLICATE_WINDOW_MS = 10 * 60 * 1000
 
+// Duplicate-send guard (see the cookie policy): stores a scrambled fingerprint of email + message,
+// never the details themselves, in sessionStorage so it's gone when the tab closes.
+function fingerprint(text) {
+  let hash = 0x811c9dc5
+  for (let i = 0; i < text.length; i++) {
+    hash ^= text.charCodeAt(i)
+    hash = Math.imul(hash, 0x01000193)
+  }
+  return (hash >>> 0).toString(36)
+}
+
 export default function ProjectInquiryForm() {
   const [form, setForm] = useState(EMPTY_FORM)
   const [status, setStatus] = useState('idle') // idle | submitting | success | error | duplicate | unconfigured
@@ -76,9 +88,9 @@ export default function ProjectInquiryForm() {
       return
     }
 
-    const duplicateKey = `daimoarc-lead-${form.email.trim().toLowerCase()}-${form.message.trim()}`
+    const duplicateKey = `daimoarc-lead-${fingerprint(`${form.email.trim().toLowerCase()}|${form.message.trim()}`)}`
     let previousSubmission = null
-    try { previousSubmission = localStorage.getItem(duplicateKey) } catch { /* storage unavailable, ignore */ }
+    try { previousSubmission = sessionStorage.getItem(duplicateKey) } catch { /* storage unavailable, ignore */ }
     if (previousSubmission && Date.now() - Number(previousSubmission) < DUPLICATE_WINDOW_MS) {
       setStatus('duplicate')
       return
@@ -98,7 +110,7 @@ export default function ProjectInquiryForm() {
         body: JSON.stringify({ ...form, submissionId: ref, source: 'DaimoArc website' }),
       })
 
-      try { localStorage.setItem(duplicateKey, String(Date.now())) } catch { /* ignore */ }
+      try { sessionStorage.setItem(duplicateKey, String(Date.now())) } catch { /* ignore */ }
       setReference(ref)
       setStatus('success')
       setForm(EMPTY_FORM)
@@ -118,7 +130,7 @@ export default function ProjectInquiryForm() {
       <div className="intake-form-done">
         <div className="intake-form-done-icon">✓</div>
         <h3>Request sent{reference ? ` — Reference: ${reference}` : ''}</h3>
-        <p>We'll review it and reply within one business day.</p>
+        <p>We'll review it and reply within a few hours.</p>
       </div>
     )
   }
@@ -127,7 +139,7 @@ export default function ProjectInquiryForm() {
     <form className="intake-form" onSubmit={handleSubmit}>
       <div className="form-grid">
         <label className="form-field">
-          <span>Full Name *</span>
+          <span>Full name *</span>
           <input type="text" autoComplete="name" value={form.name} onChange={(e) => update('name', e.target.value)} placeholder="Jane Doe" required />
         </label>
         <label className="form-field">
@@ -139,20 +151,20 @@ export default function ProjectInquiryForm() {
           <input type="tel" autoComplete="tel" value={form.phone} onChange={(e) => update('phone', e.target.value)} placeholder="+44 7700 900000" />
         </label>
         <label className="form-field">
-          <span>Preferred Contact</span>
+          <span>Preferred contact</span>
           <select value={form.preferredContact} onChange={(e) => update('preferredContact', e.target.value)}>
             {PREFERRED_CONTACTS.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         </label>
         <label className="form-field">
-          <span>Budget Range *</span>
+          <span>Budget range *</span>
           <select value={form.budget} onChange={(e) => update('budget', e.target.value)} required>
             <option value="" disabled>Select a budget</option>
             {BUDGETS.map((b) => <option key={b} value={b}>{b}</option>)}
           </select>
         </label>
         <label className="form-field">
-          <span>Desired Timeline *</span>
+          <span>Desired timeline *</span>
           <select value={form.timeline} onChange={(e) => update('timeline', e.target.value)} required>
             <option value="" disabled>Select a timeline</option>
             {TIMELINES.map((t) => <option key={t} value={t}>{t}</option>)}
@@ -161,7 +173,7 @@ export default function ProjectInquiryForm() {
       </div>
 
       <div className="form-field form-field--full">
-        <span>Services Needed * <em className="form-field-hint">(select all that apply)</em></span>
+        <span>Services needed * <em className="form-field-hint">(select all that apply)</em></span>
         <div className="service-checkbox-group">
           {SERVICES.map((s) => (
             <label key={s} className="service-checkbox">
@@ -173,13 +185,16 @@ export default function ProjectInquiryForm() {
       </div>
 
       <label className="form-field form-field--full">
-        <span>Project Goals *</span>
+        <span>Project goals *</span>
         <textarea rows={4} minLength={20} value={form.message} onChange={(e) => update('message', e.target.value)} placeholder="What are you trying to achieve? Include any important features, links, or constraints." required />
       </label>
 
       <label className="form-consent">
         <input type="checkbox" checked={form.consent} onChange={(e) => update('consent', e.target.checked)} required />
-        <span>I agree to be contacted about this project.</span>
+        <span>
+          I agree to be contacted about this project. Read how we use your details in our{' '}
+          <Link to="/privacy" target="_blank" rel="noopener noreferrer">privacy policy</Link>
+        </span>
       </label>
 
       {/* Honeypot — hidden from real users via CSS, bots that auto-fill every field trip it */}
@@ -202,7 +217,7 @@ export default function ProjectInquiryForm() {
       )}
 
       <button type="submit" className="btn-primary" disabled={status === 'submitting'}>
-        {status === 'submitting' ? 'Sending...' : 'Send Project Brief →'}
+        {status === 'submitting' ? 'Sending' : 'Send project brief'}
       </button>
     </form>
   )
